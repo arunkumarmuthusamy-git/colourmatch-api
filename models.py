@@ -227,10 +227,19 @@ class FeatureFlag(Base):
 # Database Engine & Session
 # ──────────────────────────────────────────────
 settings = get_settings()
+_is_sqlite = "sqlite" in settings.DATABASE_URL
+
 engine = create_engine(
     settings.DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {},
+    connect_args={"check_same_thread": False} if _is_sqlite else {},
     echo=settings.DEBUG,
+    # PostgreSQL connection pool settings for Neon serverless
+    **({} if _is_sqlite else {
+        "pool_pre_ping": True,      # Test connections before use (handles dropped connections)
+        "pool_recycle": 300,         # Recycle connections every 5 min
+        "pool_size": 5,
+        "max_overflow": 10,
+    }),
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
