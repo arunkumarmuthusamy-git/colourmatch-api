@@ -1,0 +1,30 @@
+# Virtual env
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Local database
+*.db
+*.db-shm
+*.db-wal
+
+# Git
+.git/
+.gitignore
+
+# Render config (not needed for EB)
+render.yaml
+
+# Environment file (vars set via EB console)
+.env
+
+# Uploads (use S3 in production)
+uploads/
+
+# IDE
+.vscode/
+.idea/
